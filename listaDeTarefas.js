@@ -1,6 +1,9 @@
 import BotaoConclui from './components/concluirTarefa.js'
 import BotaoDeleta from './components/deletaTarefa.js'
 
+import { gerarUUID } from './components/uuid.js' // ou ajuste o caminho se estiver em outra pasta
+
+
 const lista = document.querySelector('[data-list]')
 const itemTarefa = document.querySelector('[data-form-input]')
 const novaTarefa = document.querySelector('[data-form-button]')
@@ -19,26 +22,44 @@ const criarTarefa = (evento) => {
     const valor = itemTarefa.value.trim()
     if (valor === '') return
 
-    const novaTarefa = { conteudo: valor, concluida: false }
+    const novaTarefa = {
+    id: gerarUUID(),
+    conteudo: valor,
+    concluida: false
+}
+
     adicionarTarefaNaTela(novaTarefa)
     salvarTarefa(novaTarefa)
 
     itemTarefa.value = ''
 }
 
-// Adiciona a tarefa na tela
+
+
 function adicionarTarefaNaTela(tarefaObj) {
     const tarefa = document.createElement('li')
     tarefa.classList.add('task')
+    tarefa.dataset.id = tarefaObj.id
 
-    const conteudo = `<p class='content'>${tarefaObj.conteudo}</p>`
-    tarefa.innerHTML = conteudo
+    if (tarefaObj.concluida) {
+        tarefa.classList.add('done')
+    }
 
+    const paragrafo = document.createElement('p')
+    paragrafo.classList.add('content')
+    paragrafo.innerText = tarefaObj.conteudo
+
+    tarefa.appendChild(paragrafo)
     tarefa.appendChild(BotaoConclui())
     tarefa.appendChild(BotaoDeleta())
 
     lista.appendChild(tarefa)
+
+    console.log(`Tarefa renderizada: id=${tarefaObj.id}, concluida=${tarefaObj.concluida}`)
+
 }
+
+
 
 // Salva no localStorage
 function salvarTarefa(tarefaObj) {
@@ -48,3 +69,4 @@ function salvarTarefa(tarefaObj) {
 }
 
 novaTarefa.addEventListener('click', criarTarefa)
+

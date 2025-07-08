@@ -6,13 +6,20 @@ const BotaoDeleta = () => {
 }
 
 const deletarTarefa = (evento) => {
-    const botaoDeleta = evento.target
+    const botao = evento.target
+    const tarefaElemento = botao.parentElement
+    const id = tarefaElemento.dataset.id;
 
-    const tarefaCompleta = botaoDeleta.parentElement
+    
 
-    tarefaCompleta.remove()
+    // Remove do DOM
+    tarefaElemento.remove()
 
-    return botaoDeleta
+    // Remove do localStorage
+    const tarefas = JSON.parse(localStorage.getItem('tarefas')) || []
+    const tarefasAtualizadas = tarefas.filter(tarefa => tarefa.id !== id);
+
+    localStorage.setItem('tarefas', JSON.stringify(tarefasAtualizadas))
 }
 
 export default BotaoDeleta
